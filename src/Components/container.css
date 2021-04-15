@@ -1,0 +1,49 @@
+.container-parent {
+  margin-left: 125px;
+  margin-top: 50px;
+  display: flex;
+}
+
+.container-cont:last-child {
+  margin-left: 50px;
+}
+
+.container-cont {
+  border: solid 1px #0e0e0e;
+  width: 37vw;
+}
+
+.container-cont h1 {
+  color: #0e0e0e;
+  font-size: 25px;
+  font-weight: normal;
+  margin-left: 4px;
+}
+
+.container-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.container-form input,
+.container-form select,
+.container-form label {
+  width: 35vw;
+  margin: 4px;
+}
+
+.container-form input[type="submit"] {
+  width: 60px;
+}
+
+.container-form label {
+  font-weight: bold;
+}
+
+.container-form-second input {
+  margin: 4px;
+}
+
+.container-form-search-results {
+  margin: 4px;
+}

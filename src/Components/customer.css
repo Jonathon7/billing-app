@@ -1,0 +1,27 @@
+.customer-form {
+  margin-left: 125px;
+  margin-top: 50px;
+  white-space: pre;
+  display: flex;
+  flex-direction: column;
+  height: 25vw;
+  width: 25vw;
+  border: solid 1px #0e0e0e;
+  border-radius: 2px;
+  padding: 5px;
+}
+
+.customer-form h1 {
+  color: #0e0e0e;
+  font-size: 25px;
+  font-weight: normal;
+}
+
+.customer-form input[type="submit"]:hover {
+  color: #f8f8f8;
+}
+
+.customer-form input {
+  box-shadow: none;
+  outline: none;
+}

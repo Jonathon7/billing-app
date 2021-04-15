@@ -1,0 +1,72 @@
+.transaction-cont {
+  margin-left: 125px;
+  margin-top: 50px;
+  border: solid 1px #0e0e0e;
+  width: 65vw;
+  height: 40vh;
+}
+
+.transaction-cont-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.transaction-cont-header p {
+  margin-right: 10px;
+}
+
+.transaction-inner-cont {
+  display: flex;
+}
+
+.transaction-cont h1 {
+  color: #0e0e0e;
+  font-size: 25px;
+  font-weight: normal;
+  margin-left: 4px;
+}
+
+.transaction-cont label {
+  margin: 5px;
+}
+
+.transaction-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.transaction-form input[type="submit"] {
+  width: 60px;
+}
+
+.transaction-form input,
+.transaction-form select,
+.transaction-form label {
+  width: 35vw;
+  margin: 4px;
+}
+
+.transaction-fees-cont {
+  border-left: 1px black solid;
+  margin-left: 20px;
+}
+
+.transaction-fees-cont p {
+  font-weight: bold;
+  margin: 2px;
+}
+
+.transaction-fees-cont input,
+.transaction-fees-cont p {
+  margin-left: 5px;
+}
+
+.transaction-fees-list {
+  /* overflow: scroll; */
+}
+
+.transaction-fee p {
+  display: inline-block;
+  font-weight: normal;
+}

@@ -1,0 +1,18 @@
+.location-cont {
+  margin-left: 125px;
+  margin-top: 50px;
+  white-space: pre;
+  display: flex;
+  flex-direction: column;
+  height: 25vw;
+  width: 25vw;
+  border: solid 1px #0e0e0e;
+  border-radius: 2px;
+  padding: 5px;
+}
+
+.location-cont h1 {
+  color: #0e0e0e;
+  font-size: 25px;
+  font-weight: normal;
+}
