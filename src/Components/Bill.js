@@ -1,6 +1,7 @@
 import axios from "axios";
 import React from "react";
 import "./bill.css";
+import { CSVLink, CSVDownload } from "react-csv";
 
 export default class Bill extends React.Component {
   state = {
@@ -8,6 +9,7 @@ export default class Bill extends React.Component {
     endDate: "",
     transactionsPerCustomer: [],
     emptyFields: [],
+    data: [],
   };
 
   handleChange = (e) => {
@@ -25,7 +27,6 @@ export default class Bill extends React.Component {
         `/api/get-transactions/${this.state.startDate}/${this.state.endDate}`
       )
       .then((res) => {
-        console.log(res.data);
         const data = res.data;
         const transactionsPerCustomer = [];
 
@@ -47,7 +48,6 @@ export default class Bill extends React.Component {
           );
 
           if (customerExists) {
-            console.log("HIT ", i);
             this.updateTransactionAmount(
               transaction.id,
               transaction.amount,
@@ -58,8 +58,21 @@ export default class Bill extends React.Component {
           }
         }
 
+        console.log(data);
+        let formattedData = [];
+
+        for (let i = 0; i < data.length; i++) {
+          let obj = {};
+          obj.name = data[i][5].value;
+          obj.amount = data[i][6].value;
+          obj.date = data[i][7].value;
+
+          formattedData.push(obj);
+        }
+
         this.setState({
           transactionsPerCustomer,
+          data: formattedData,
         });
       })
       .catch((err) => {
@@ -92,11 +105,11 @@ export default class Bill extends React.Component {
   checkForEmptyFields = (e) => {
     e.preventDefault();
     let emptyFields = this.state.emptyFields;
-    if (this.state.containerId === "") {
+    if (this.state.startDate === "") {
       emptyFields.push("startDate");
     }
 
-    if (this.state.location === "") {
+    if (this.state.endDate === "") {
       emptyFields.push("endDate");
     }
 
@@ -137,6 +150,11 @@ export default class Bill extends React.Component {
   };
 
   render() {
+    let headers = [
+      { label: "Name", key: "name" },
+      { label: "Amount", key: "amount" },
+      { label: "Date", key: "date" },
+    ];
     return (
       <div className="bill-cont">
         <form onSubmit={this.checkForEmptyFields}>
@@ -169,6 +187,11 @@ export default class Bill extends React.Component {
             );
           })}
         </div>
+        {this.state.data.length > 0 && (
+          <CSVLink data={this.state.data} headers={headers}>
+            Download me
+          </CSVLink>
+        )}
       </div>
     );
   }

@@ -4,11 +4,12 @@
   white-space: pre;
   display: flex;
   flex-direction: column;
-  height: 25vw;
-  width: 25vw;
-  border: solid 1px #0e0e0e;
+  width: fit-content;
   border-radius: 2px;
-  padding: 5px;
+  padding: 10px;
+  padding-bottom: 50px;
+  background: white;
+  border-top: solid 3px #008080;
 }
 
 .customer-form h1 {

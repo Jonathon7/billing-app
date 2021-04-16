@@ -14,8 +14,7 @@ export default class App extends React.Component {
             this.setState({ activeComponent: "customer" });
           }}
           style={{
-            color: this.state.activeComponent === "customer" && "white",
-            opacity: this.state.activeComponent === "customer" && "1",
+            color: this.state.activeComponent === "customer" && "#00cccc",
           }}
         >
           Customer
@@ -26,8 +25,7 @@ export default class App extends React.Component {
             this.setState({ activeComponent: "location" });
           }}
           style={{
-            color: this.state.activeComponent === "location" && "white",
-            opacity: this.state.activeComponent === "location" && "1",
+            color: this.state.activeComponent === "location" && "#00cccc",
           }}
         >
           Location
@@ -38,8 +36,7 @@ export default class App extends React.Component {
             this.setState({ activeComponent: "container" });
           }}
           style={{
-            color: this.state.activeComponent === "container" && "white",
-            opacity: this.state.activeComponent === "container" && "1",
+            color: this.state.activeComponent === "container" && "#00cccc",
           }}
         >
           Container
@@ -50,8 +47,7 @@ export default class App extends React.Component {
             this.setState({ activeComponent: "transactions" });
           }}
           style={{
-            color: this.state.activeComponent === "transactions" && "white",
-            opacity: this.state.activeComponent === "transactions" && "1",
+            color: this.state.activeComponent === "transactions" && "#00cccc",
           }}
         >
           Transactions
@@ -62,8 +58,7 @@ export default class App extends React.Component {
             this.setState({ activeComponent: "bill" });
           }}
           style={{
-            color: this.state.activeComponent === "bill" && "white",
-            opacity: this.state.activeComponent === "bill" && "1",
+            color: this.state.activeComponent === "bill" && "#00cccc",
           }}
         >
           Bill

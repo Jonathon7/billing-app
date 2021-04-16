@@ -2,6 +2,7 @@ let Request = require("tedious").Request;
 
 const insertTransaction = (req, res, next, connection) => {
   const { customerId, locationId, containerNumber, billItem } = req.body;
+  console.log(req.body);
 
   const m = new Date();
   const date =

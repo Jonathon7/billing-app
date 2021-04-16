@@ -4,3 +4,9 @@
   color: #d8d8d8;
   outline: none;
 }
+
+body {
+  height: 100vh;
+  overflow: hidden;
+  background: #f1f1f1;
+}

@@ -9,15 +9,22 @@
 }
 
 .container-cont {
-  border: solid 1px #0e0e0e;
-  width: 37vw;
+  border-top: solid 3px #008080;
+  background: white;
+  width: fit-content;
+}
+
+.inner-container-cont {
+  padding: 10px;
 }
 
 .container-cont h1 {
   color: #0e0e0e;
-  font-size: 25px;
+  font-size: 20px;
   font-weight: normal;
-  margin-left: 4px;
+  padding: 1px 4px;
+  background: rgb(0, 128, 128, 0.2);
+  color: black;
 }
 
 .container-form {
@@ -28,12 +35,11 @@
 .container-form input,
 .container-form select,
 .container-form label {
-  width: 35vw;
   margin: 4px;
 }
 
 .container-form input[type="submit"] {
-  width: 60px;
+  width: fit-content;
 }
 
 .container-form label {

@@ -20,16 +20,18 @@ export default class Transactions extends React.Component {
     this.getFees();
   }
 
+  // TODO: should not add additional fees on tonnage change, but it should update the amount. Also when a transaction is submitted, this function gets called again and adds these fees with blank amounts. it should not do this
   componentDidUpdate(prevProps, prevState) {
     if (prevState.ton != this.state.ton) {
-      console.log("ADD BILL ITEMS");
       this.addBillItem({
         name: "TNRCC FEE CHARGE",
+        id: 5,
         amount: (this.state.ton * this.state.TNRCCFeeCharge).toFixed(2),
       });
 
       this.addBillItem({
         name: "LANDFILL TONNAGE",
+        id: 4,
         amount: (this.state.ton * this.state.landFillTonnage).toFixed(2),
       });
     }
@@ -125,7 +127,6 @@ export default class Transactions extends React.Component {
         let sum = 0;
         // adds all bill item amounts
         for (let i = 0; i < billItems.length; i++) {
-          console.log(typeof billItems[i].amount);
           sum += parseFloat(billItems[i].amount);
         }
 

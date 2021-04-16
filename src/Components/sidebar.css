@@ -1,5 +1,4 @@
 .sidebar-cont {
-  /* border: solid 1px red; */
   display: flex;
   flex-direction: column;
   width: 100px;
@@ -19,9 +18,12 @@
   padding: 5px;
   padding-left: 10px;
   cursor: pointer;
-  color: #f8f8f8;
-  opacity: 0.8;
+  color: white;
   margin-left: 0;
+}
+
+.sidebar-cont p:hover {
+  color: #00cccc;
 }
 
 .sidebar-cont p:hover {

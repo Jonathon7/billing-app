@@ -83,7 +83,7 @@ export default class Fees extends React.Component {
         let currentFee = this.state.fees.find(
           (elem) => elem.name.value === suggestion
         );
-
+        console.log(currentFee);
         this.setState({
           feeAmountInput: currentFee.amount.value,
           suggestions: [],
@@ -171,6 +171,7 @@ export default class Fees extends React.Component {
             }}
             value={this.state.feeNameInput}
             placeholder={this.props.feeNameText}
+            autoComplete="off"
           ></input>
           <input
             type="text"
@@ -182,6 +183,7 @@ export default class Fees extends React.Component {
             name="feeAmountInput"
             value={this.state.feeAmountInput}
             placeholder={this.props.feeAmountText}
+            autoComplete="off"
           ></input>
           <input
             type="submit"

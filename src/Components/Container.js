@@ -22,7 +22,6 @@ export default class Container extends React.Component {
     const regex = /^[0-9\b]+$/;
     if (
       e.target.name === "containerId" ||
-      e.target.name === "location" ||
       e.target.name === "containerIdSearch"
     ) {
       if (e.target.value === "" || regex.test(e.target.value)) {
@@ -147,64 +146,70 @@ export default class Container extends React.Component {
       <div className="container-parent">
         <div className="container-cont">
           <h1>Add or Update a Container</h1>
-          <form onSubmit={this.checkForEmptyFields} className="container-form">
-            <label htmlFor="container-id">Container ID:</label>
-            <input
-              onChange={this.handleChange}
-              name="containerId"
-              onFocus={this.removeEmptyField}
-              value={this.state.containerId}
-              style={{
-                border: this.isFieldEmpty("containerId") && "solid 1px red",
-              }}
-            ></input>
-            <label htmlFor="cubic-yard">Cubic Yard: </label>
-            <select name="cubicYard" onChange={this.handleChange}>
-              <option value="30">30yd</option>
-              <option value="40">40yd</option>
-            </select>
-            <label htmlFor="type">Type: </label>
-            <select name="type" onChange={this.handleChange}>
-              <option value="COMPACTOR">COMPACTOR</option>
-              <option value="OPEN TOP">OPEN TOP</option>
-            </select>
-            <label htmlFor="city-owned">City Owned: </label>
-            <select name="cityOwned" onChange={this.handleChange}>
-              <option value="1">YES</option>
-              <option value="0">NO</option>
-            </select>
-            <label htmlFor="in-stock">In Stock: </label>
-            <input
-              readOnly
-              value={this.state.location === "" ? "YES" : "NO"}
-            ></input>
-            <label htmlFor="returned-to-stock-date">
-              Returned to Stock Date:{" "}
-            </label>
-            <input
-              type="date"
-              name="returnedToStockDate"
-              onChange={this.handleChange}
-            ></input>
-            <label htmlFor="location">Location: </label>
-            <input
-              type="text"
-              name="location"
-              onFocus={this.removeEmptyField}
-              onChange={this.handleChange}
-              value={this.state.location}
-              style={{
-                border: this.isFieldEmpty("location") && "solid 1px red",
-              }}
-            ></input>
-            <label htmlFor="comment">Comment: </label>
-            <input
-              type="text"
-              name="comment"
-              onChange={this.handleChange}
-            ></input>
-            <input type="submit" className="black-button-white-text"></input>
-          </form>
+
+          <div className="inner-container-cont">
+            <form
+              onSubmit={this.checkForEmptyFields}
+              className="container-form"
+            >
+              <label htmlFor="container-id">Container ID:</label>
+              <input
+                onChange={this.handleChange}
+                name="containerId"
+                onFocus={this.removeEmptyField}
+                value={this.state.containerId}
+                style={{
+                  border: this.isFieldEmpty("containerId") && "solid 1px red",
+                }}
+              ></input>
+              <label htmlFor="cubic-yard">Cubic Yard: </label>
+              <select name="cubicYard" onChange={this.handleChange}>
+                <option value="30">30yd</option>
+                <option value="40">40yd</option>
+              </select>
+              <label htmlFor="type">Type: </label>
+              <select name="type" onChange={this.handleChange}>
+                <option value="COMPACTOR">COMPACTOR</option>
+                <option value="OPEN TOP">OPEN TOP</option>
+              </select>
+              <label htmlFor="city-owned">City Owned: </label>
+              <select name="cityOwned" onChange={this.handleChange}>
+                <option value="1">YES</option>
+                <option value="0">NO</option>
+              </select>
+              <label htmlFor="in-stock">In Stock: </label>
+              <input
+                readOnly
+                value={this.state.location === "" ? "YES" : "NO"}
+              ></input>
+              <label htmlFor="returned-to-stock-date">
+                Returned to Stock Date:{" "}
+              </label>
+              <input
+                type="date"
+                name="returnedToStockDate"
+                onChange={this.handleChange}
+              ></input>
+              <label htmlFor="location">Location: </label>
+              <input
+                type="text"
+                name="location"
+                onFocus={this.removeEmptyField}
+                onChange={this.handleChange}
+                value={this.state.location}
+                style={{
+                  border: this.isFieldEmpty("location") && "solid 1px red",
+                }}
+              ></input>
+              <label htmlFor="comment">Comment: </label>
+              <input
+                type="text"
+                name="comment"
+                onChange={this.handleChange}
+              ></input>
+              <input type="submit" className="black-button-white-text"></input>
+            </form>
+          </div>
         </div>
         <div className="container-cont">
           <h1>Find a Container</h1>

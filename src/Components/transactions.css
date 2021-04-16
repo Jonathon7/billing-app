@@ -1,9 +1,9 @@
 .transaction-cont {
   margin-left: 125px;
   margin-top: 50px;
-  border: solid 1px #0e0e0e;
-  width: 65vw;
-  height: 40vh;
+  border-top: solid 3px #008080;
+  background: white;
+  padding: 10px;
 }
 
 .transaction-cont-header {

@@ -5,6 +5,7 @@ import Location from "./Location.js";
 import Container from "./Container";
 import Transactions from "./Transactions";
 import Bill from "./Bill";
+import "./home.css";
 
 export default class Home extends React.Component {
   state = {
@@ -38,7 +39,7 @@ export default class Home extends React.Component {
     }
 
     return (
-      <div>
+      <div className="home-cont">
         <Sidebar toggleComponent={this.toggleComponent} />
         {component}
       </div>
