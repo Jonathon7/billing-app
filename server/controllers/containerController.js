@@ -2,7 +2,6 @@ let Request = require("tedious").Request;
 
 const insertContainer = (req, res, next, connection) => {
   const {
-    containerId,
     cubicYard,
     type,
     cityOwned,
@@ -13,7 +12,7 @@ const insertContainer = (req, res, next, connection) => {
   } = req.body;
 
   const request = new Request(
-    `insert into ${process.env.containerTable} (ContainerId, CubicYard, Type, CityOwned, InStock, ReturnedToStockDate, Location, Comment) values (${containerId}, '${cubicYard}', '${type}', ${cityOwned}, ${inStock}, '${returnedToStockDate}', '${location}', '${comment}');`,
+    `insert into ${process.env.containerTable} (CubicYard, Type, CityOwned, InStock, ReturnedToStockDate, Location, Comment) values ('${cubicYard}', '${type}', ${cityOwned}, ${inStock}, '${returnedToStockDate}', '${location}', '${comment}');`,
     (err) => {
       if (err) {
         throw err;
@@ -23,7 +22,6 @@ const insertContainer = (req, res, next, connection) => {
   );
 
   request.on("requestCompleted", function () {
-    console.log("Row Inserted.");
     res.status(200).json("Row Inserted.");
   });
 
@@ -55,7 +53,37 @@ const getContainer = (req, res, next, connection) => {
   connection.execSql(request);
 };
 
+const updateContainer = (req, res, next, connection) => {
+  const {
+    containerId,
+    cubicYard,
+    type,
+    cityOwned,
+    inStock,
+    returnedToStockDate,
+    location,
+    comment,
+  } = req.body;
+
+  const request = new Request(
+    `update ${process.env.containerTable} set CubicYard =${cubicYard}, Type =${type}, CityOwned=${cityOwned}, InStock=${inStock}, ReturnedToStockDate=${returnedToStockDate}, Location=${location}, Comment=${comment} where containerId=${containerId}`,
+    (err) => {
+      if (err) {
+        throw err;
+      }
+      connection.close();
+    }
+  );
+
+  request.on("requestCompleted", function () {
+    res.status(200).json("Row Updated.");
+  });
+
+  connection.execSql(request);
+};
+
 module.exports = {
   insertContainer,
   getContainer,
+  updateContainer,
 };

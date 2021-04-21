@@ -1,20 +1,17 @@
 require("dotenv").config();
 const express = require("express");
 const { json } = require("body-parser");
+let session = require("express-session");
 const cors = require("cors");
-const { openDbConnection, openAS400DbConnection } = require("./database");
-const {
-  getCustomerName,
-  addCustomer,
-} = require("./controllers/customerController");
-const {
-  getLocation,
-  addLocation,
-} = require("./controllers/locationController");
+const { login } = require("./controllers/loginController");
+const { openDbConnection } = require("./database");
+const { getCustomerName } = require("./controllers/customerController");
+const { getLocation } = require("./controllers/locationController");
 const { getFees, addFee } = require("./controllers/feesController");
 const {
   insertContainer,
   getContainer,
+  updateContainer,
 } = require("./controllers/containerController");
 const {
   getTransactions,
@@ -25,24 +22,39 @@ const {
 const app = express();
 app.use(json());
 app.use(cors());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24 * 7 * 2, // 2 weeks
+    },
+  })
+);
+
+// Login form
+app.post("/api/login", login);
 
 // Customer form
 app.get("/api/get-customer-name/:id", (req, res, next) =>
   openDbConnection(req, res, next, getCustomerName)
 );
 
-app.post("/api/insert-customer", (req, res, next) =>
-  openAS400DbConnection(req, res, next, addCustomer)
-);
+// interacts with AS400 db
+// app.post("/api/insert-customer", (req, res, next) =>
+//   openAS400DbConnection(req, res, next, addCustomer)
+// );
 
 // Location form
 app.get("/api/get-location/:locationId", (req, res, next) =>
   openDbConnection(req, res, next, getLocation)
 );
 
-app.post("/api/insert-location", (req, res, next) =>
-  openAS400DbConnection(req, res, next, addLocation)
-);
+// interacts with AS400 db
+// app.post("/api/insert-location", (req, res, next) =>
+//   openAS400DbConnection(req, res, next, addLocation)
+// );
 
 // Fees form
 app.get("/api/get-fees", (req, res, next) =>
@@ -56,6 +68,10 @@ app.post("/api/add-fee", (req, res, next) =>
 // Container form
 app.post("/api/insert-container", (req, res, next) =>
   openDbConnection(req, res, next, insertContainer)
+);
+
+app.put("/api/update-container", (req, res, next) =>
+  openDbConnection(req, res, next, updateContainer)
 );
 
 app.get("/api/get-container/:containerIdSearch", (req, res, next) =>

@@ -83,7 +83,6 @@ export default class Fees extends React.Component {
         let currentFee = this.state.fees.find(
           (elem) => elem.name.value === suggestion
         );
-        console.log(currentFee);
         this.setState({
           feeAmountInput: currentFee.amount.value,
           suggestions: [],

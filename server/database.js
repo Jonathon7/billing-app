@@ -42,58 +42,58 @@ const openDbConnection = (req, res, next, callback) => {
   connection.connect();
 };
 
-const openAS400DbConnection = (req, res, next, callback) => {
-  //
-  // node app.js <schema> <user> <password>
-  //
+// const openAS400DbConnection = (req, res, next, callback) => {
+//   //
+//   // node app.js <schema> <user> <password>
+//   //
 
-  var JDBC = require("jdbc");
+//   var JDBC = require("jdbc");
 
-  var jinst = require("jdbc/lib/jinst");
+//   var jinst = require("jdbc/lib/jinst");
 
-  if (!jinst.isJvmCreated()) {
-    jinst.addOption("-Xrs");
+//   if (!jinst.isJvmCreated()) {
+//     jinst.addOption("-Xrs");
 
-    jinst.setupClasspath(["./drivers/jt400.jar"]);
-  }
+//     jinst.setupClasspath(["./drivers/jt400.jar"]);
+//   }
 
-  var server = process.env.AS400IP;
+//   var server = process.env.AS400IP;
 
-  var schema = process.env.SCHEMA;
+//   var schema = process.env.SCHEMA;
 
-  var user = process.env.AS400USER;
+//   var user = process.env.AS400USER;
 
-  var password = process.env.AS400PASSWORD;
+//   var password = process.env.AS400PASSWORD;
 
-  var config = {
-    url: "jdbc:as400://" + server + "/" + schema,
+//   var config = {
+//     url: "jdbc:as400://" + server + "/" + schema,
 
-    drivername: "com.ibm.as400.access.AS400JDBCDriver",
+//     drivername: "com.ibm.as400.access.AS400JDBCDriver",
 
-    minpoolsize: 10,
+//     minpoolsize: 10,
 
-    maxpoolsize: 100,
+//     maxpoolsize: 100,
 
-    properties: {
-      user: user,
+//     properties: {
+//       user: user,
 
-      password: password,
-    },
-  };
+//       password: password,
+//     },
+//   };
 
-  var ibmi = new JDBC(config);
+//   var ibmi = new JDBC(config);
 
-  ibmi.initialize(function (err) {
-    if (err) {
-      console.log(err);
-    } else {
-      callback(req, res, next, ibmi);
-      console.log("Connection initalized without error");
-    }
-  });
-};
+//   ibmi.initialize(function (err) {
+//     if (err) {
+//       console.log(err);
+//     } else {
+//       callback(req, res, next, ibmi);
+//       console.log("Connection initalized without error");
+//     }
+//   });
+// };
 
 module.exports = {
   openDbConnection,
-  openAS400DbConnection,
+  // openAS400DbConnection,
 };

@@ -1,14 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Home from "./Components/Home";
-import "./index.css";
+import { BrowserRouter as Router } from "react-router-dom";
+import routes from "./routes";
 
 const App = () => {
-  return (
-    <div>
-      <Home />
-    </div>
-  );
+  return <Router>{routes}</Router>;
 };
 
 ReactDOM.render(<App />, document.getElementById("root"));

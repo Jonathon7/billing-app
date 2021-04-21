@@ -22,7 +22,8 @@ export default class Container extends React.Component {
     const regex = /^[0-9\b]+$/;
     if (
       e.target.name === "containerId" ||
-      e.target.name === "containerIdSearch"
+      e.target.name === "containerIdSearch" ||
+      e.target.name === "location"
     ) {
       if (e.target.value === "" || regex.test(e.target.value)) {
         this.setState({
@@ -38,7 +39,6 @@ export default class Container extends React.Component {
 
   handleSubmit = () => {
     if (this.state.emptyFields.length) {
-      console.log(this.state.emptyFields);
       return;
     }
     const {
@@ -63,14 +63,25 @@ export default class Container extends React.Component {
       comment,
     };
 
-    axios
-      .post("/api/insert-container", data)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (this.state.containerId) {
+      axios
+        .post("/api/insert-container", data)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      axios
+        .put("/api/update-container", data)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   searchContainer = (e) => {
@@ -97,9 +108,6 @@ export default class Container extends React.Component {
   checkForEmptyFields = (e) => {
     e.preventDefault();
     let emptyFields = this.state.emptyFields;
-    if (this.state.containerId === "") {
-      emptyFields.push("containerId");
-    }
 
     if (this.state.location === "") {
       emptyFields.push("location");
@@ -154,13 +162,10 @@ export default class Container extends React.Component {
             >
               <label htmlFor="container-id">Container ID:</label>
               <input
+                placeholder="Only required for updating"
                 onChange={this.handleChange}
                 name="containerId"
-                onFocus={this.removeEmptyField}
                 value={this.state.containerId}
-                style={{
-                  border: this.isFieldEmpty("containerId") && "solid 1px red",
-                }}
               ></input>
               <label htmlFor="cubic-yard">Cubic Yard: </label>
               <select name="cubicYard" onChange={this.handleChange}>

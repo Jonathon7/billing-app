@@ -20,22 +20,79 @@ export default class Transactions extends React.Component {
     this.getFees();
   }
 
-  // TODO: should not add additional fees on tonnage change, but it should update the amount. Also when a transaction is submitted, this function gets called again and adds these fees with blank amounts. it should not do this
   componentDidUpdate(prevProps, prevState) {
     if (prevState.ton != this.state.ton) {
-      this.addBillItem({
-        name: "TNRCC FEE CHARGE",
-        id: 5,
-        amount: (this.state.ton * this.state.TNRCCFeeCharge).toFixed(2),
-      });
-
-      this.addBillItem({
-        name: "LANDFILL TONNAGE",
-        id: 4,
-        amount: (this.state.ton * this.state.landFillTonnage).toFixed(2),
-      });
+      this.updateSetFeeAmounts();
     }
   }
+
+  /**
+   * @description - updates the TNRCC FEE CHARGE and the LANDFILL TONNAGE charges when the TON input is updated. It adds the bill items when they are not in the bill items array, it updates the items when the bill items are already in the array and the TON value is changed to a non-zero number. It removes the bill items when the TON input is changed to zero.
+   */
+  updateSetFeeAmounts = () => {
+    const billItems = this.state.billItems;
+    let chargeAmount = this.state.chargeAmount;
+    let updated = false;
+
+    // removes the fees if the TON input is zero
+    if (!this.state.ton) {
+      let idx1;
+      let idx2;
+      let amount1;
+      let amount2;
+
+      for (let i = 0; i < billItems.length; i++) {
+        if (billItems[i].name === "TNRCC FEE CHARGE") {
+          idx1 = i;
+          amount1 = billItems[i].amount;
+        }
+
+        if (billItems[i].name === "LANDFILL TONNAGE") {
+          amount2 = billItems[i].amount;
+          idx2 = i;
+        }
+      }
+
+      billItems.splice(idx1, 1);
+      billItems.splice(--idx2, 1);
+
+      chargeAmount -= parseFloat(amount1) + parseFloat(amount2);
+
+      this.setState({ billItems, chargeAmount });
+      return;
+    }
+
+    // if the fee is found and the TON input is not zero, then the amount will be updated
+    for (let i = 0; i < billItems.length; i++) {
+      if (billItems[i].name === "TNRCC FEE CHARGE") {
+        billItems[i].amount = this.state.ton * this.state.TNRCCFeeCharge;
+        updated = true;
+      }
+
+      if (billItems[i].name === "LANDFILL TONNAGE") {
+        billItems[i].amount = this.state.ton * this.state.landFillTonnage;
+      }
+    }
+
+    // function returns at this point and not at the end of the function so the bill items array will only be set to state on updated amount case and not on added fees case
+    if (updated) {
+      this.setState({ billItems });
+      return;
+    }
+
+    // when the bill items are not in the array and need to be added
+    this.addBillItem({
+      name: "TNRCC FEE CHARGE",
+      id: 5,
+      amount: (this.state.ton * this.state.TNRCCFeeCharge).toFixed(2),
+    });
+
+    this.addBillItem({
+      name: "LANDFILL TONNAGE",
+      id: 4,
+      amount: (this.state.ton * this.state.landFillTonnage).toFixed(2),
+    });
+  };
 
   /**
    * @description - retrieves all fees needed for calculated fields and sets the calculated fields to state
@@ -65,17 +122,23 @@ export default class Transactions extends React.Component {
   handleChange = (e) => {
     // test to allow only numbers
     const regex = /^[0-9\b]+$/;
+    // test to allow only numbers or periods
+    const regex2 = /^[0-9,.]*$/;
     if (
       e.target.name === "customerId" ||
       e.target.name === "locationId" ||
-      e.target.name === "containerNumber" ||
-      e.target.name === "ton"
+      e.target.name === "containerNumber"
     ) {
       if (e.target.value === "" || regex.test(e.target.value)) {
         this.setState({
           [e.target.name]: e.target.value,
         });
       }
+    } else if (e.target.name === "ton") {
+      if (e.target.value === "" || regex2.test(e.target.value))
+        this.setState({
+          [e.target.name]: e.target.value,
+        });
     } else {
       this.setState({
         [e.target.name]: e.target.value,
