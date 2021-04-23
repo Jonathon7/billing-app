@@ -1,17 +1,19 @@
 import axios from "axios";
 import React from "react";
-import Confirmation from "./Confirmation";
 import "./location.css";
 
 export default class Location extends React.Component {
   state = {
     locationId: "",
-    accountType: "perm",
     confirmation: false,
     address1: "",
     address2: "",
     id: "",
     emptyFields: [],
+    newId: "",
+    newAddress1: "",
+    newAddress2: "",
+    newAccountType: "perm",
   };
 
   handleSubmit = () => {
@@ -26,7 +28,11 @@ export default class Location extends React.Component {
       if (res.data === "Location not found.") {
         this.getLocationInfo();
       } else {
-        this.setState({ id: res.data.id, address1: res.data.address });
+        this.setState({
+          id: res.data.id,
+          address1: res.data.address1,
+          address2: res.data.address2,
+        });
       }
     });
   };
@@ -52,21 +58,40 @@ export default class Location extends React.Component {
       });
   };
 
-  setAccountType = (e) => {
-    this.setState({
-      accountType: e.target.value,
-    });
-  };
-
-  setLocationId = (e) => {
+  handleChange = (e) => {
     // test to allow only numbers
     const regex = /^[0-9\b]+$/;
 
-    if (e.target.value === "" || regex.test(e.target.value)) {
-      this.setState({
-        locationId: e.target.value,
-      });
+    if (e.target.name === "locationId" || e.target.name === "newId") {
+      if (e.target.value === "" || regex.test(e.target.value)) {
+        this.setState({
+          [e.target.name]: e.target.value,
+        });
+      }
+    } else {
+      this.setState({ [e.target.name]: e.target.value });
     }
+  };
+
+  addLocation = (e) => {
+    e.preventDefault();
+    axios
+      .post("/api/add-location", {
+        id: this.state.newId,
+        address1: this.state.newAddress1,
+        address2: this.state.newAddress2,
+        type: this.state.newAccountType,
+      })
+      .then((res) => {
+        // NOTIFICATION
+        console.log(res);
+        this.setState({
+          newId: "",
+          newAccountType: "",
+          newAddress1: "",
+          newAddress2: "",
+        });
+      });
   };
 
   handleConfirmationForm = (yes) => {
@@ -170,7 +195,7 @@ export default class Location extends React.Component {
         <form onSubmit={this.checkForEmptyFields}>
           <input
             type="text"
-            onChange={this.setLocationId}
+            onChange={this.handleChange}
             value={this.state.locationId}
             name="locationId"
             placeholder="Enter location ID"
@@ -179,31 +204,50 @@ export default class Location extends React.Component {
               border: this.isFieldEmpty("locationId") && "solid 1px red",
             }}
           ></input>
-          <select name="account-type" onChange={this.setAccountType}>
-            <option value="perm">Perm</option>
-            <option value="temp">Temp</option>
-          </select>
-          <input type="submit" className="black-button-white-text"></input>
+          <input
+            type="submit"
+            className="black-button-white-text"
+            value="Search"
+          ></input>
         </form>
 
         {this.state.id && (
           <div>
-            <p>Address: {this.state.address1}</p>
+            <p>Address1: {this.state.address1}</p>
+            <p>Address2: {this.state.address2}</p>
             <p>ID: {this.state.id}</p>
           </div>
         )}
-
-        {this.state.confirmation && (
-          <Confirmation
-            message={
-              "Location was not found, would you like to create the location?"
-            }
-            name={this.state.address1}
-            id={this.state.locationId}
-            yes={() => this.handleConfirmationForm(true)}
-            no={() => this.handleConfirmationForm(false)}
-          />
-        )}
+        <p>Add a Location</p>
+        <form onSubmit={this.addLocation}>
+          <input
+            type="text"
+            placeholder="ID"
+            name="newId"
+            onChange={this.handleChange}
+          ></input>
+          <input
+            type="text"
+            placeholder="Address 1"
+            name="newAddress1"
+            onChange={this.handleChange}
+          ></input>
+          <input
+            type="text"
+            placeholder="Address 2"
+            name="newAddress2"
+            onChange={this.handleChange}
+          ></input>
+          <select
+            onChange={this.handleChange}
+            value={this.state.newAccountType}
+            name="newAccountType"
+          >
+            <option value="perm">Perm</option>
+            <option value="temp">Temp</option>
+          </select>
+          <input type="submit"></input>
+        </form>
       </div>
     );
   }

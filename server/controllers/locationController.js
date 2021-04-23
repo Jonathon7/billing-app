@@ -18,7 +18,11 @@ const getLocation = (req, res, next, connection) => {
   request.on("doneInProc", (rowCount, more, rows) => {
     console.log(rows);
     if (rows[0]) {
-      result = { id: rows[0][0].value, address: rows[0][2].value };
+      result = {
+        id: rows[0][0].value,
+        address1: rows[0][2].value,
+        address2: rows[0][3].value,
+      };
     }
   });
   request.on("requestCompleted", function () {
@@ -29,6 +33,56 @@ const getLocation = (req, res, next, connection) => {
     } else {
       res.status(200).json(result);
     }
+  });
+
+  connection.execSql(request);
+};
+
+const checkForExistingLocation = (req, res, next, connection) => {
+  let locationExists = false;
+  const request = new Request(
+    `select * from ${process.env.locationTable} where LocationId = '${req.body.id}';`,
+    (err) => {
+      if (err) {
+        throw err;
+      }
+      connection.close();
+    }
+  );
+
+  request.on("doneInProc", (rowCount, more, rows) => {
+    console.log(rows);
+    if (rows[0]) {
+      locationExists = true;
+    }
+  });
+
+  request.on("requestCompleted", function () {
+    if (locationExists) {
+      res.status(200).json("Location already exists.");
+    } else {
+      next();
+    }
+  });
+
+  connection.execSql(request);
+};
+
+const addLocation = (req, res, next, connection) => {
+  const request = new Request(
+    `insert into ${process.env.locationTable}(LocationId, AccountType, Address1, Address2) values('${req.body.id}', '${req.body.type}', '${req.body.address1}', '${req.body.address2}');`,
+    (err) => {
+      if (err) {
+        throw err;
+      }
+      connection.close();
+    }
+  );
+
+  request.on("requestCompleted", function () {
+    connection.close();
+
+    res.status(200).json("Location added.");
   });
 
   connection.execSql(request);
@@ -179,5 +233,6 @@ const getLocation = (req, res, next, connection) => {
 
 module.exports = {
   getLocation,
-  // addLocation,
+  checkForExistingLocation,
+  addLocation,
 };

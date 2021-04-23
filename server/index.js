@@ -5,8 +5,16 @@ let session = require("express-session");
 const cors = require("cors");
 const { login } = require("./controllers/loginController");
 const { openDbConnection } = require("./database");
-const { getCustomerName } = require("./controllers/customerController");
-const { getLocation } = require("./controllers/locationController");
+const {
+  getCustomerName,
+  addCustomer,
+  checkForExistingCustomer,
+} = require("./controllers/customerController");
+const {
+  getLocation,
+  checkForExistingLocation,
+  addLocation,
+} = require("./controllers/locationController");
 const { getFees, addFee } = require("./controllers/feesController");
 const {
   insertContainer,
@@ -41,6 +49,13 @@ app.get("/api/get-customer-name/:id", (req, res, next) =>
   openDbConnection(req, res, next, getCustomerName)
 );
 
+app.post(
+  "/api/add-customer",
+  (req, res, next) =>
+    openDbConnection(req, res, next, checkForExistingCustomer),
+  (req, res, next) => openDbConnection(req, res, next, addCustomer)
+);
+
 // interacts with AS400 db
 // app.post("/api/insert-customer", (req, res, next) =>
 //   openAS400DbConnection(req, res, next, addCustomer)
@@ -51,6 +66,13 @@ app.get("/api/get-location/:locationId", (req, res, next) =>
   openDbConnection(req, res, next, getLocation)
 );
 
+app.post(
+  "/api/add-location",
+  (req, res, next) =>
+    openDbConnection(req, res, next, checkForExistingLocation),
+  (req, res, next) => openDbConnection(req, res, next, addLocation)
+);
+
 // interacts with AS400 db
 // app.post("/api/insert-location", (req, res, next) =>
 //   openAS400DbConnection(req, res, next, addLocation)
@@ -59,6 +81,10 @@ app.get("/api/get-location/:locationId", (req, res, next) =>
 // Fees form
 app.get("/api/get-fees", (req, res, next) =>
   openDbConnection(req, res, next, getFees)
+);
+
+app.put("/api/update-fee-amount", (req, res, next) =>
+  openDbConnection(req, res, next, updateFeeAmount)
 );
 
 app.post("/api/add-fee", (req, res, next) =>
@@ -81,10 +107,6 @@ app.get("/api/get-container/:containerIdSearch", (req, res, next) =>
 // Transaction and Bill form
 app.post("/api/insert-transaction", (req, res, next) =>
   openDbConnection(req, res, next, insertTransaction)
-);
-
-app.put("/api/update-fee-amount", (req, res, next) =>
-  openDbConnection(req, res, next, updateFeeAmount)
 );
 
 app.get("/api/get-transactions/:startDate/:endDate", (req, res, next) => {

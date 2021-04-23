@@ -11,6 +11,7 @@ const insertContainer = (req, res, next, connection) => {
     comment,
   } = req.body;
 
+  console.log(req.body);
   const request = new Request(
     `insert into ${process.env.containerTable} (CubicYard, Type, CityOwned, InStock, ReturnedToStockDate, Location, Comment) values ('${cubicYard}', '${type}', ${cityOwned}, ${inStock}, '${returnedToStockDate}', '${location}', '${comment}');`,
     (err) => {
@@ -66,7 +67,7 @@ const updateContainer = (req, res, next, connection) => {
   } = req.body;
 
   const request = new Request(
-    `update ${process.env.containerTable} set CubicYard =${cubicYard}, Type =${type}, CityOwned=${cityOwned}, InStock=${inStock}, ReturnedToStockDate=${returnedToStockDate}, Location=${location}, Comment=${comment} where containerId=${containerId}`,
+    `update ${process.env.containerTable} set CubicYard ='${cubicYard}', Type ='${type}', CityOwned=${cityOwned}, InStock=${inStock}, ReturnedToStockDate='${returnedToStockDate}', Location='${location}', Comment='${comment}' where containerId=${containerId}`,
     (err) => {
       if (err) {
         throw err;

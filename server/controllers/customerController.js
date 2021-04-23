@@ -33,6 +33,55 @@ const getCustomerName = (req, res, next, connection) => {
   connection.execSql(request);
 };
 
+const checkForExistingCustomer = (req, res, next, connection) => {
+  console.log(req.body);
+  let customerExists = false;
+  const request = new Request(
+    `select * from ${process.env.customerTable} where CustomerId = ${req.body.id}`,
+    (err) => {
+      if (err) {
+        throw err;
+      }
+      connection.close();
+    }
+  );
+
+  request.on("doneInProc", (rowCount, more, rows) => {
+    console.log(rows);
+    if (rows[0]) {
+      customerExists = true;
+    }
+  });
+
+  request.on("requestCompleted", function () {
+    if (customerExists) {
+      res.status(200).json("Customer already exists.");
+    } else {
+      next();
+    }
+  });
+
+  connection.execSql(request);
+};
+
+const addCustomer = (req, res, next, connection) => {
+  const request = new Request(
+    `insert into ${process.env.customerTable}(CustomerId, Name) values(${req.body.id}, '${req.body.name}');`,
+    (err) => {
+      if (err) {
+        throw err;
+      }
+      connection.close();
+    }
+  );
+
+  request.on("requestCompleted", function () {
+    res.status(200).json("Customer Added.");
+  });
+
+  connection.execSql(request);
+};
+
 /**
  * @description - gets called if the user does not exist in the TRASH db and needs to be pulled from AS400 db. It only executes a select statement if the user needs to first confirm that they want to insert the retrieved row in the TRASH db also. If the user confirms that they do want to make the entry, the function gets called again and the insert query gets executed.
  * @param {object} ibmi - db object from opening the AS400 db connection
@@ -173,5 +222,6 @@ const getCustomerName = (req, res, next, connection) => {
 
 module.exports = {
   getCustomerName,
-  // addCustomer,
+  checkForExistingCustomer,
+  addCustomer,
 };

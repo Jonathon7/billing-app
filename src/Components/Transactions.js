@@ -13,6 +13,7 @@ export default class Transactions extends React.Component {
     ton: "",
     billItems: [],
     fees: {}, // contains any amounts relevant for calculated fields
+    addFee: true, // either render add fee form or update fee form
     emptyFields: [],
   };
 
@@ -207,6 +208,22 @@ export default class Transactions extends React.Component {
     axios.put("/api/update-fee-amount", change).then((res) => console.log(res));
   };
 
+  addNewFee = (Fee) => {
+    console.log(Fee);
+    axios.post("/api/add-fee", Fee).then((res) => console.log(res));
+  };
+
+  /**
+   * @description - used to either render the add fee form or the update fee form
+   */
+  renderAddOrUpdate = (e) => {
+    if (e.target.value === "addFee") {
+      this.setState({ addFee: true });
+    } else {
+      this.setState({ addFee: false });
+    }
+  };
+
   /**
    * @description - checks for empty fields that are required and concatenates them in a string so that error indications can be rendered for the user
    */
@@ -349,8 +366,9 @@ export default class Transactions extends React.Component {
               <Fees
                 handleSubmit={this.addBillItem}
                 buttonText="Add Fee"
-                feeNameText="Enter Name of Fee"
+                feeNameText="Name of Fee"
                 feeAmountText="Fee Amount"
+                useSuggestions={true}
               />
             </div>
 
@@ -374,11 +392,38 @@ export default class Transactions extends React.Component {
             </div>
           </div>
         </div>
+        <hr></hr>
+        <select
+          onChange={this.renderAddOrUpdate}
+          name="feeUpdateOrAddSelection"
+        >
+          <option value="addFee">Add a Fee</option>
+          <option>Update a Fee</option>
+        </select>
 
-        {/* <div>
-          <p>Change Fee Amount</p>
-          <Fees handleSubmit={this.changeFeeAmount} />
-        </div> */}
+        {!this.state.addFee ? (
+          <div>
+            <p>Change Fee Amount</p>
+            <Fees
+              feeNameText="Name of Fee"
+              feeAmountText="Fee Amount"
+              handleSubmit={this.changeFeeAmount}
+              buttonText="Update"
+              useSuggestions={true}
+            />
+          </div>
+        ) : (
+          <div>
+            <p>Add a New Fee</p>
+            <Fees
+              feeNameText="Name of Fee"
+              feeAmountText="Fee Amount"
+              handleSubmit={this.addNewFee}
+              buttonText="Add"
+              useSuggestions={false}
+            />
+          </div>
+        )}
       </div>
     );
   }

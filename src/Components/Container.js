@@ -63,7 +63,10 @@ export default class Container extends React.Component {
       comment,
     };
 
-    if (this.state.containerId) {
+    console.log("DATA ", data);
+
+    if (this.state.containerId === "") {
+      console.log("HIT1");
       axios
         .post("/api/insert-container", data)
         .then((res) => {
@@ -73,6 +76,7 @@ export default class Container extends React.Component {
           console.log(err);
         });
     } else {
+      console.log("HIT2");
       axios
         .put("/api/update-container", data)
         .then((res) => {
@@ -212,7 +216,13 @@ export default class Container extends React.Component {
                 name="comment"
                 onChange={this.handleChange}
               ></input>
-              <input type="submit" className="black-button-white-text"></input>
+              <input
+                type="submit"
+                className="black-button-white-text"
+                value={
+                  this.state.containerId ? "Update Container" : "Add Container"
+                }
+              ></input>
             </form>
           </div>
         </div>

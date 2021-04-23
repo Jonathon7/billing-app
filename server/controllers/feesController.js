@@ -28,7 +28,7 @@ const addFee = (req, res, next, connection) => {
   console.log(req.body);
 
   const request = new Request(
-    `update ${process.env.feesTable} set name = '${req.body.name}', amount = ${req.body.amount} where FeeId = ${req.body.id};`,
+    `insert into ${process.env.feesTable}(Name, Amount) values('${req.body.name}', ${req.body.amount});`,
     (err) => {
       if (err) {
         throw err;
@@ -39,7 +39,7 @@ const addFee = (req, res, next, connection) => {
 
   request.on("requestCompleted", function () {
     console.log("Request Completed");
-    res.status(200).json("Fee Added!");
+    res.status(200).json("Fee Added.");
   });
 
   connection.execSql(request);

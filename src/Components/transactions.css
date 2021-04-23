@@ -70,3 +70,7 @@
   display: inline-block;
   font-weight: normal;
 }
+
+.transaction-cont hr {
+  margin-top: 30px;
+}

@@ -191,19 +191,21 @@ export default class Fees extends React.Component {
           ></input>
         </form>
 
-        <div className="suggestion-cont">
-          {this.state.suggestions.map((suggestion, index) => {
-            return (
-              <div
-                key={index}
-                onClick={() => this.useSuggestion(suggestion)}
-                className="suggestion"
-              >
-                {suggestion}
-              </div>
-            );
-          })}
-        </div>
+        {this.props.useSuggestions && (
+          <div className="suggestion-cont">
+            {this.state.suggestions.map((suggestion, index) => {
+              return (
+                <div
+                  key={index}
+                  onClick={() => this.useSuggestion(suggestion)}
+                  className="suggestion"
+                >
+                  {suggestion}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     );
   }

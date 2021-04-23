@@ -2,23 +2,30 @@ import React from "react";
 import axios from "axios";
 import "./customer.css";
 import "../index.css";
-import Confirmation from "./Confirmation";
 
 export default class Customer extends React.Component {
   state = {
     id: "",
     name: "",
-    confirmation: false,
+    newName: "",
+    newId: "",
     emptyFields: [], // will specify which input are empty
   };
 
-  idInput = (e) => {
+  handleChange = (e) => {
     // test to allow only numbers
     const regex = /^[0-9\b]+$/;
 
-    if (e.target.value === "" || regex.test(e.target.value)) {
+    if (
+      e.target.value === "" ||
+      (regex.test(e.target.value) && e.target.name === "id")
+    ) {
       this.setState({
         id: e.target.value,
+      });
+    } else {
+      this.setState({
+        [e.target.name]: e.target.value,
       });
     }
   };
@@ -55,6 +62,19 @@ export default class Customer extends React.Component {
         } else {
           // NOTIFICATION: Customer does not exist
         }
+      });
+  };
+
+  addCustomer = (e) => {
+    e.preventDefault();
+
+    axios
+      .post("/api/add-customer", {
+        id: this.state.newId,
+        name: this.state.newName,
+      })
+      .then((res) => {
+        console.log(res);
       });
   };
 
@@ -133,14 +153,18 @@ export default class Customer extends React.Component {
         <form onSubmit={this.checkForEmptyFields}>
           <input
             type="text"
-            onChange={this.idInput}
+            onChange={this.handleChange}
             value={this.state.id}
             name="id"
             placeholder="Enter customer ID"
             style={{ border: this.isFieldEmpty("id") && "solid 1px red" }}
             onFocus={this.removeEmptyField}
           ></input>
-          <input type="submit" className="black-button-white-text"></input>
+          <input
+            type="submit"
+            className="black-button-white-text"
+            value="Search"
+          ></input>
         </form>
 
         {this.state.name && (
@@ -149,18 +173,23 @@ export default class Customer extends React.Component {
             <p>ID: {this.state.id}</p>
           </div>
         )}
+        <p>Add a Customer</p>
+        <form onSubmit={this.addCustomer}>
+          <input
+            type="text"
+            placeholder="ID"
+            name="newId"
+            onChange={this.handleChange}
+          ></input>
+          <input
+            type="text"
+            placeholder="Name"
+            name="newName"
+            onChange={this.handleChange}
+          ></input>
 
-        {this.state.confirmation && (
-          <Confirmation
-            message={
-              "Customer was not found, would you like to create the customer?"
-            }
-            name={this.state.name}
-            id={this.state.id}
-            yes={() => this.handleConfirmationForm(true)}
-            no={() => this.handleConfirmationForm(false)}
-          />
-        )}
+          <input type="submit"></input>
+        </form>
       </div>
     );
   }
