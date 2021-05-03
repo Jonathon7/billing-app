@@ -15,7 +15,13 @@ export default class Container extends React.Component {
     containerIdSearch: "",
     container: [], // the returned container the user searched for
     emptyFields: [],
+    height: "", // height of form div
   };
+
+  componentDidMount() {
+    const height = this.formContainer.clientHeight;
+    this.setState({ height });
+  }
 
   handleChange = (e) => {
     // test to allow only numbers
@@ -63,10 +69,7 @@ export default class Container extends React.Component {
       comment,
     };
 
-    console.log("DATA ", data);
-
     if (this.state.containerId === "") {
-      console.log("HIT1");
       axios
         .post("/api/insert-container", data)
         .then((res) => {
@@ -76,7 +79,6 @@ export default class Container extends React.Component {
           console.log(err);
         });
     } else {
-      console.log("HIT2");
       axios
         .put("/api/update-container", data)
         .then((res) => {
@@ -156,7 +158,13 @@ export default class Container extends React.Component {
   render() {
     return (
       <div className="container-parent">
-        <div className="container-cont">
+        <div
+          className="container-cont"
+          ref={(formContainer) => {
+            this.formContainer = formContainer;
+          }}
+          style={{ height: this.state.height }}
+        >
           <h1>Add or Update a Container</h1>
 
           <div className="inner-container-cont">
@@ -226,7 +234,13 @@ export default class Container extends React.Component {
             </form>
           </div>
         </div>
-        <div className="container-cont">
+
+        <div
+          id="vertical-line"
+          style={{ height: this.state.height - 20 }}
+        ></div>
+
+        <div className="container-cont" style={{ height: this.state.height }}>
           <h1>Find a Container</h1>
           <form
             onSubmit={this.searchContainer}

@@ -3,6 +3,8 @@
   background: #232323;
   color: #d8d8d8;
   outline: none;
+  width: fit-content;
+  width: -moz-fit-content;
 }
 
 body {

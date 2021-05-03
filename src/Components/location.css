@@ -4,6 +4,7 @@
   white-space: pre;
   display: flex;
   flex-direction: column;
+  width: -moz-fit-content;
   width: fit-content;
   border-top: solid 3px #008080;
   background: white;

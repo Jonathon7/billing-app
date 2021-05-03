@@ -2,16 +2,15 @@
   margin-left: 125px;
   margin-top: 50px;
   display: flex;
-}
-
-.container-cont:last-child {
-  margin-left: 50px;
+  align-items: center;
 }
 
 .container-cont {
   border-top: solid 3px #008080;
   background: white;
+  width: moz-fit-content;
   width: fit-content;
+  padding: 10px;
 }
 
 .inner-container-cont {
@@ -42,7 +41,7 @@
 }
 
 .container-form label {
-  font-weight: bold;
+  font-size: 16px;
 }
 
 .container-form-second input {
@@ -51,4 +50,10 @@
 
 .container-form-search-results {
   margin: 4px;
+}
+
+#vertical-line {
+  width: 1px;
+  background: #008080;
+  display: inline-block;
 }
