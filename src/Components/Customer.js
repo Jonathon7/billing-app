@@ -2,17 +2,21 @@ import React from "react";
 import axios from "axios";
 import "./customer.css";
 import "../index.css";
+import Confirmation from "./Confirmation";
 
 export default class Customer extends React.Component {
   state = {
     id: "",
     name: "",
-    newName: "",
-    newId: "",
+    newName: "", // when adding a customer
+    newId: "", // adding id
+    updatedCustomer: "",
+    confirm: false,
     emptyFields: [], // will specify which input are empty
   };
 
   handleChange = (e) => {
+    console.log(e.target);
     // test to allow only numbers
     const regex = /^[0-9\b]+$/;
 
@@ -32,38 +36,31 @@ export default class Customer extends React.Component {
 
   handleSubmit = () => {
     if (this.state.emptyFields.length) {
-      console.log(this.state.emptyFields);
       return;
     }
 
     axios.get(`/api/get-customer-name/${this.state.id}`).then((res) => {
-      console.log(res);
-      if (res.data === "Customer not found.") {
-        this.getCustomerInfo();
-      } else {
-        console.log(res);
-        this.setState({ id: res.data.id, name: res.data.name });
-      }
+      this.setState({ id: res.data.id, name: res.data.name });
     });
   };
 
   /**
    * @description - function gets called when the customer does not exist in TRASH db and needs to be pulled from AS400 db
    */
-  getCustomerInfo = () => {
-    axios
-      .post(`/api/insert-customer`, {
-        id: this.state.id,
-        confirm: true,
-      })
-      .then((res) => {
-        if (res.data[0]) {
-          this.setState({ confirmation: true, name: res.data[0] });
-        } else {
-          // NOTIFICATION: Customer does not exist
-        }
-      });
-  };
+  // getCustomerInfo = () => {
+  //   axios
+  //     .post(`/api/insert-customer`, {
+  //       id: this.state.id,
+  //       confirm: true,
+  //     })
+  //     .then((res) => {
+  //       if (res.data[0]) {
+  //         this.setState({ confirmation: true, name: res.data[0] });
+  //       } else {
+  //         // NOTIFICATION: Customer does not exist
+  //       }
+  //     });
+  // };
 
   addCustomer = (e) => {
     e.preventDefault();
@@ -74,30 +71,8 @@ export default class Customer extends React.Component {
         name: this.state.newName,
       })
       .then((res) => {
-        console.log(res);
+        this.setState({ name: "", id: "" });
       });
-  };
-
-  // handles the yes or no response that the user selects in the confirmation form. **** NEEDS NOTIFICATION ****
-  handleConfirmationForm = (yes) => {
-    if (yes) {
-      axios
-        .post("/api/insert-customer", {
-          id: this.state.id,
-          confirm: false,
-        })
-        .then((res) => {
-          if (res.data[0] != "") {
-            this.setState({
-              name: "",
-              id: "",
-              confirmation: false,
-            });
-          }
-        });
-    } else {
-      this.setState({ id: "", name: "", confirmation: false });
-    }
   };
 
   /**
@@ -110,11 +85,21 @@ export default class Customer extends React.Component {
       emptyFields.push("id");
     }
 
+    if (this.state.updatedCustomer === "" && this.state.confirm) {
+      emptyFields.push("updatedCustomer");
+    }
+
     this.setState(
       {
         emptyFields,
       },
-      () => this.handleSubmit()
+      () => {
+        if (!this.state.confirm) {
+          this.handleSubmit();
+        } else {
+          this.updateCustomer;
+        }
+      }
     );
   };
 
@@ -146,6 +131,21 @@ export default class Customer extends React.Component {
     return false;
   };
 
+  confirm = () => {
+    this.setState({ confirm: !this.state.confirm });
+  };
+
+  updateCustomer = (name) => {
+    axios
+      .put("/api/update-customer", { name, id: this.state.id })
+      .then((res) => {
+        console.log(res);
+        if (res.data === "Customer Updated.") {
+          this.setState({ confirm: false, name: "", updatedName: "" });
+        }
+      });
+  };
+
   render() {
     return (
       <div className="customer-form">
@@ -171,6 +171,7 @@ export default class Customer extends React.Component {
           <div>
             <p>Name: {this.state.name}</p>
             <p>ID: {this.state.id}</p>
+            <button onClick={this.confirm}>Change</button>
           </div>
         )}
         <p>Add a Customer</p>
@@ -190,6 +191,16 @@ export default class Customer extends React.Component {
 
           <input type="submit"></input>
         </form>
+        {this.state.confirm && (
+          <Confirmation
+            message="Change the customer's name?"
+            placeholder="New customer name"
+            initialValue={this.state.name}
+            yes={this.updateCustomer}
+            no={this.confirm}
+            input={true}
+          />
+        )}
       </div>
     );
   }

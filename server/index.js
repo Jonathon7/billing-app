@@ -9,6 +9,7 @@ const {
   getCustomerName,
   addCustomer,
   checkForExistingCustomer,
+  updateCustomer,
 } = require("./controllers/customerController");
 const {
   getLocation,
@@ -48,6 +49,10 @@ app.post("/api/login", login);
 app.get("/api/get-customer-name/:id", (req, res, next) =>
   openDbConnection(req, res, next, getCustomerName)
 );
+
+app.put("/api/update-customer", (req, res, next) => {
+  openDbConnection(req, res, next, updateCustomer);
+});
 
 app.post(
   "/api/add-customer",

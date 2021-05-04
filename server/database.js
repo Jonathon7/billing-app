@@ -12,9 +12,8 @@ const openDbConnection = (req, res, next, callback) => {
   var config = {
     server: process.env.IP,
     authentication: {
-      type: "ntlm",
+      type: "default",
       options: {
-        domain: process.env.DOMAIN,
         userName: process.env.USER,
         password: process.env.PASSWORD,
       },

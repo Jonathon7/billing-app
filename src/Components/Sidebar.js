@@ -3,7 +3,7 @@ import "./sidebar.css";
 
 export default class App extends React.Component {
   state = {
-    activeComponent: "",
+    activeComponent: "customer",
   };
   render() {
     return (

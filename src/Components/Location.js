@@ -1,6 +1,8 @@
 import axios from "axios";
 import React from "react";
 import "./location.css";
+import Confirmation from "./Confirmation";
+import LocationForm from "./LocationForm";
 
 export default class Location extends React.Component {
   state = {
@@ -14,6 +16,7 @@ export default class Location extends React.Component {
     newAddress1: "",
     newAddress2: "",
     newAccountType: "perm",
+    confirm: false,
   };
 
   handleSubmit = () => {
@@ -94,36 +97,6 @@ export default class Location extends React.Component {
       });
   };
 
-  handleConfirmationForm = (yes) => {
-    if (yes) {
-      axios
-        .post(`/api/insert-location`, {
-          id: this.state.locationId,
-          accountType: this.state.accountType,
-          address1: this.state.address1,
-          address2: this.state.address2,
-          confirm: false,
-        })
-        .then((res) => {
-          this.setState({
-            confirmation: false,
-            locationId: "",
-            address1: "",
-            address2: "",
-            accountType: "perm",
-          });
-        });
-    } else {
-      this.setState({
-        confirmation: false,
-        locationId: "",
-        address1: "",
-        address2: "",
-        accountType: "perm",
-      });
-    }
-  };
-
   removeWhiteSpace = (string) => {
     let result = "";
     let prevChar = "";
@@ -188,6 +161,20 @@ export default class Location extends React.Component {
     return false;
   };
 
+  confirm = () => {
+    this.setState({ confirm: !this.state.confirm });
+  };
+
+  updateLocation = (location) => {
+    console.log(location);
+    // axios.put("/api/update-location", { location }).then((res) => {
+    //   console.log(res);
+    //   if (res.data === "Location Updated.") {
+    //     this.setState({ confirm: false });
+    //   }
+    // });
+  };
+
   render() {
     return (
       <div className="location-cont">
@@ -216,38 +203,23 @@ export default class Location extends React.Component {
             <p>Address1: {this.state.address1}</p>
             <p>Address2: {this.state.address2}</p>
             <p>ID: {this.state.id}</p>
+            <button onClick={this.confirm}>Change</button>
           </div>
         )}
         <p>Add a Location</p>
-        <form onSubmit={this.addLocation}>
-          <input
-            type="text"
-            placeholder="ID"
-            name="newId"
-            onChange={this.handleChange}
-          ></input>
-          <input
-            type="text"
-            placeholder="Address 1"
-            name="newAddress1"
-            onChange={this.handleChange}
-          ></input>
-          <input
-            type="text"
-            placeholder="Address 2"
-            name="newAddress2"
-            onChange={this.handleChange}
-          ></input>
-          <select
-            onChange={this.handleChange}
-            value={this.state.newAccountType}
-            name="newAccountType"
-          >
-            <option value="perm">Perm</option>
-            <option value="temp">Temp</option>
-          </select>
-          <input type="submit"></input>
-        </form>
+        <LocationForm submit={this.addLocation} />
+        {this.state.confirm && (
+          <Confirmation
+            message="Change the location?"
+            component={LocationForm}
+            yes={this.updateLocation}
+            no={this.confirm}
+            id={this.state.id}
+            address1={this.state.address1}
+            address2={this.state.address2}
+            // accountType={this.state.accountType}
+          />
+        )}
       </div>
     );
   }

@@ -35,7 +35,7 @@ export default class Home extends React.Component {
         component = <Bill />;
         break;
       default:
-        component = null;
+        component = <Customer />;
     }
 
     return (
