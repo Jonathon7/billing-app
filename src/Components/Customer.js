@@ -3,6 +3,11 @@ import axios from "axios";
 import "./customer.css";
 import "../index.css";
 import Confirmation from "./Confirmation";
+import {
+  NotificationContainer,
+  NotificationManager,
+} from "react-notifications";
+import { createNotification } from "../utils/notifications";
 
 export default class Customer extends React.Component {
   state = {
@@ -41,6 +46,8 @@ export default class Customer extends React.Component {
 
     axios.get(`/api/get-customer-name/${this.state.id}`).then((res) => {
       this.setState({ id: res.data.id, name: res.data.name });
+
+      createNotification(NotificationManager, "success", "Customer Found.");
     });
   };
 
@@ -189,7 +196,7 @@ export default class Customer extends React.Component {
             onChange={this.handleChange}
           ></input>
 
-          <input type="submit"></input>
+          <input type="submit" value="Add Customer"></input>
         </form>
         {this.state.confirm && (
           <Confirmation

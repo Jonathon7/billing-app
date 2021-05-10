@@ -257,7 +257,11 @@ export default class Container extends React.Component {
               onChange={this.handleChange}
               value={this.state.containerIdSearch}
             ></input>
-            <input type="submit" className="black-button-white-text"></input>
+            <input
+              type="submit"
+              className="black-button-white-text"
+              value="Search"
+            ></input>
           </form>
           <div className="container-form-search-results">
             {this.state.container.map((elem, i) => {

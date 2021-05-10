@@ -201,6 +201,20 @@ export default class Transactions extends React.Component {
     );
   };
 
+  removeBillItem = (idx, amount) => {
+    const billItems = this.state.billItems;
+    let chargeAmount = this.state.chargeAmount;
+
+    chargeAmount -= amount;
+    if (chargeAmount === 0) {
+      chargeAmount = "";
+    }
+
+    billItems.splice(idx, 1);
+
+    this.setState({ billItems, chargeAmount });
+  };
+
   /**
    * @param {object} change - contains the id, name, and the amount of the fee. The id is used to query and the amount is what is updated. The user can only change the amount of the fee and never the name.
    */
@@ -209,7 +223,6 @@ export default class Transactions extends React.Component {
   };
 
   addNewFee = (Fee) => {
-    console.log(Fee);
     axios.post("/api/add-fee", Fee).then((res) => console.log(res));
   };
 
@@ -357,7 +370,11 @@ export default class Transactions extends React.Component {
               </>
             )}
 
-            <input type="submit" className="black-button-white-text"></input>
+            <input
+              type="submit"
+              className="black-button-white-text"
+              value="Submit"
+            ></input>
           </form>
 
           <div className="transaction-fees-cont">
@@ -374,6 +391,7 @@ export default class Transactions extends React.Component {
 
             <div className="transaction-fees-list">
               {this.state.billItems.map((elem, index) => {
+                console.log(elem);
                 return (
                   <div
                     key={index}
@@ -386,6 +404,11 @@ export default class Transactions extends React.Component {
                     <p>
                       {elem.name}, ${elem.amount}
                     </p>
+                    <button
+                      onClick={() => this.removeBillItem(index, elem.amount)}
+                    >
+                      &#10005;
+                    </button>
                   </div>
                 );
               })}
