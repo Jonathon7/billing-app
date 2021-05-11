@@ -174,7 +174,7 @@ export default class Container extends React.Component {
             >
               <label htmlFor="container-id">Container ID:</label>
               <input
-                placeholder="Only required for updating"
+                placeholder="Enter Container ID"
                 onChange={this.handleChange}
                 name="containerId"
                 value={this.state.containerId}
