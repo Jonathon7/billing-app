@@ -4,10 +4,10 @@ var asyncjs = require("async");
 /**
  * @description - If the customer's id exists in the db, then the whole row is sent as a response.
  */
-const getCustomerName = (req, res, next, connection) => {
+const getCustomers = (req, res, next, connection) => {
   let result;
   const request = new Request(
-    `select * from ${process.env.customerTable} where CustomerId = ${req.params.id}`,
+    `select * from ${process.env.customerTable}`,
     (err) => {
       if (err) {
         throw err;
@@ -16,18 +16,10 @@ const getCustomerName = (req, res, next, connection) => {
     }
   );
   request.on("doneInProc", (rowCount, more, rows) => {
-    if (rows[0]) {
-      result = { id: rows[0][0].value, name: rows[0][1].value };
-    }
+    result = rows;
   });
   request.on("requestCompleted", function () {
-    // if customer id did not exist in db
-    if (!result) {
-      connection.close();
-      res.status(200).json("Customer not found.");
-    } else {
-      res.status(200).json(result);
-    }
+    res.status(200).json(result);
   });
 
   connection.execSql(request);
@@ -239,7 +231,7 @@ const updateCustomer = (req, res, next, connection) => {
 // };
 
 module.exports = {
-  getCustomerName,
+  getCustomers,
   checkForExistingCustomer,
   addCustomer,
   updateCustomer,

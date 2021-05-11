@@ -182,7 +182,9 @@ export default class Container extends React.Component {
               <label htmlFor="cubic-yard">Cubic Yard: </label>
               <select name="cubicYard" onChange={this.handleChange}>
                 <option value="30">30yd</option>
+                <option value="40">35yd</option>
                 <option value="40">40yd</option>
+                <option value="40">42yd</option>
               </select>
               <label htmlFor="type">Type: </label>
               <select name="type" onChange={this.handleChange}>

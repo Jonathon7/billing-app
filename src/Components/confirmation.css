@@ -3,6 +3,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #f5f5f5;
+  background: #ffffff;
+  border-left: solid 3px #008080;
+  outline: none;
   padding: 30px;
 }

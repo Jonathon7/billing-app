@@ -36,7 +36,7 @@ export default class Confirmation extends React.Component {
             id={this.props.id}
             address1={this.props.address1}
             address2={this.props.address2}
-            // accountType={this.props.accountType}
+            accountType={this.props.accountType}
           />
         )}
         {!this.props.component && (

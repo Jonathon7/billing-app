@@ -4,7 +4,6 @@ import Customer from "./Customer.js";
 import Location from "./Location.js";
 import Container from "./Container";
 import Transactions from "./Transactions";
-import Bill from "./Bill";
 import "./home.css";
 
 export default class Home extends React.Component {
@@ -30,9 +29,6 @@ export default class Home extends React.Component {
         break;
       case "transactions":
         component = <Transactions />;
-        break;
-      case "bill":
-        component = <Bill />;
         break;
       default:
         component = <Customer />;

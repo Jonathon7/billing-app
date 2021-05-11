@@ -4,10 +4,10 @@ let Request = require("tedious").Request;
 /**
  * @description - If the location id exists in the db, then the whole row is sent as a response.
  */
-const getLocation = (req, res, next, connection) => {
+const getLocations = (req, res, next, connection) => {
   let result;
   const request = new Request(
-    `select * from ${process.env.locationTable} where LocationId = ${req.params.locationId}`,
+    `select * from ${process.env.locationTable}`,
     (err) => {
       if (err) {
         throw err;
@@ -16,23 +16,29 @@ const getLocation = (req, res, next, connection) => {
     }
   );
   request.on("doneInProc", (rowCount, more, rows) => {
-    console.log(rows);
-    if (rows[0]) {
-      result = {
-        id: rows[0][0].value,
-        address1: rows[0][2].value,
-        address2: rows[0][3].value,
-      };
-    }
+    result = rows;
   });
   request.on("requestCompleted", function () {
-    // if location id did not exist in db
-    if (!result) {
+    res.status(200).json(result);
+  });
+
+  connection.execSql(request);
+};
+
+const updateLocation = (req, res, next, connection) => {
+  let accountType = req.body.accountType === "temp" ? "TEMP" : "PERM";
+  const request = new Request(
+    `update ${process.env.locationTable} set Address1 = '${req.body.address1}', Address2 = '${req.body.address2}', AccountType = '${accountType}' where LocationId = ${req.body.id}`,
+    (err) => {
+      if (err) {
+        throw err;
+      }
       connection.close();
-      res.status(200).json("Location not found.");
-    } else {
-      res.status(200).json(result);
     }
+  );
+
+  request.on("requestCompleted", function () {
+    res.status(200).json("Location Updated.");
   });
 
   connection.execSql(request);
@@ -232,7 +238,8 @@ const addLocation = (req, res, next, connection) => {
 // };
 
 module.exports = {
-  getLocation,
+  getLocations,
+  updateLocation,
   checkForExistingLocation,
   addLocation,
 };

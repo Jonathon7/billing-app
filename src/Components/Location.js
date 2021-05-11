@@ -17,7 +17,30 @@ export default class Location extends React.Component {
     newAddress2: "",
     newAccountType: "perm",
     confirm: false,
+    locations: [],
   };
+
+  componentDidMount() {
+    axios
+      .get("/api/get-locations")
+      .then((res) => {
+        let locations = [];
+
+        for (let i = 0; i < res.data.length; i++) {
+          let location = {};
+          location.id = res.data[i][0].value;
+          location.accountType = res.data[i][1].value;
+          location.address1 = res.data[i][2].value;
+          location.address2 = res.data[i][3].value;
+
+          locations.push(location);
+        }
+        this.setState({ locations }, () => console.log(locations));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   handleSubmit = () => {
     if (this.state.emptyFields.length) {
@@ -33,8 +56,9 @@ export default class Location extends React.Component {
       } else {
         this.setState({
           id: res.data.id,
-          address1: res.data.address1,
-          address2: res.data.address2,
+          address1: this.removeWhiteSpace(res.data.address1).trim(),
+          address2: this.removeWhiteSpace(res.data.address2).trim(),
+          accountType: res.data.accountType,
         });
       }
     });
@@ -167,12 +191,12 @@ export default class Location extends React.Component {
 
   updateLocation = (location) => {
     console.log(location);
-    // axios.put("/api/update-location", { location }).then((res) => {
-    //   console.log(res);
-    //   if (res.data === "Location Updated.") {
-    //     this.setState({ confirm: false });
-    //   }
-    // });
+    axios.put("/api/update-location", location).then((res) => {
+      console.log(res);
+      if (res.data === "Location Updated.") {
+        this.setState({ confirm: false });
+      }
+    });
   };
 
   render() {
@@ -185,7 +209,7 @@ export default class Location extends React.Component {
             onChange={this.handleChange}
             value={this.state.locationId}
             name="locationId"
-            placeholder="Enter location ID"
+            placeholder="Enter location Address or ID"
             onFocus={this.removeEmptyField}
             style={{
               border: this.isFieldEmpty("locationId") && "solid 1px red",
@@ -203,6 +227,7 @@ export default class Location extends React.Component {
             <p>Address1: {this.state.address1}</p>
             <p>Address2: {this.state.address2}</p>
             <p>ID: {this.state.id}</p>
+            <p>Account Type: {this.state.accountType}</p>
             <button onClick={this.confirm}>Change</button>
           </div>
         )}
@@ -217,7 +242,7 @@ export default class Location extends React.Component {
             id={this.state.id}
             address1={this.state.address1}
             address2={this.state.address2}
-            // accountType={this.state.accountType}
+            accountType={this.state.accountType}
           />
         )}
       </div>

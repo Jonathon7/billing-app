@@ -14,8 +14,11 @@ export default class LocationForm extends React.Component {
       id: this.props.id,
       address1: this.props.address1,
       address2: this.props.address2,
-      // accountType: this.props.accountType,
+      accountType:
+        this.props.accountType && this.props.accountType.toLowerCase(),
     });
+
+    console.log(this.props.accountType);
   }
 
   handleChange = (e) => {
@@ -29,6 +32,7 @@ export default class LocationForm extends React.Component {
         });
       }
     } else {
+      console.log("NAME: ", e.target.name, "VALUE: ", e.target.value);
       this.setState({ [e.target.name]: e.target.value });
     }
   };
@@ -98,7 +102,7 @@ export default class LocationForm extends React.Component {
         {!this.props.confirm && (
           <input
             type="text"
-            placeholder="id"
+            placeholder="Id"
             name="id"
             onChange={this.handleChange}
             value={this.state.id && this.state.id}
@@ -125,25 +129,24 @@ export default class LocationForm extends React.Component {
           style={{ border: this.isFieldEmpty("address2") && "solid 1px red" }}
           onFocus={this.removeEmptyField}
         ></input>
-        {/* <select
+        <select
           onChange={this.handleChange}
-          value={this.state.accountType && this.state.accountType}
+          value={this.state.accountType === "temp" ? "temp" : "perm"}
           name="accountType"
-          style={{
-            border: this.isFieldEmpty("accountType") && "solid 1px red",
-          }}
-          onFocus={this.removeEmptyField}
         >
           <option value="perm">Perm</option>
           <option value="temp">Temp</option>
-        </select> */}
+        </select>
         {!this.props.confirm ? (
-          <input type="submit"></input>
+          <input
+            type="submit"
+            className="black-button-white-text"
+            value="Add Location"
+          ></input>
         ) : (
           <div>
             <button
               onClick={() => {
-                console.log("HIT");
                 let data = {};
                 data.id = this.state.id;
                 data.address1 = this.state.address1;

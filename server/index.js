@@ -6,13 +6,14 @@ const cors = require("cors");
 const { login } = require("./controllers/loginController");
 const { openDbConnection } = require("./database");
 const {
-  getCustomerName,
+  getCustomers,
   addCustomer,
   checkForExistingCustomer,
   updateCustomer,
 } = require("./controllers/customerController");
 const {
-  getLocation,
+  getLocations,
+  updateLocation,
   checkForExistingLocation,
   addLocation,
 } = require("./controllers/locationController");
@@ -46,8 +47,8 @@ app.use(
 app.post("/api/login", login);
 
 // Customer form
-app.get("/api/get-customer-name/:id", (req, res, next) =>
-  openDbConnection(req, res, next, getCustomerName)
+app.get("/api/get-customers", (req, res, next) =>
+  openDbConnection(req, res, next, getCustomers)
 );
 
 app.put("/api/update-customer", (req, res, next) => {
@@ -67,8 +68,8 @@ app.post(
 // );
 
 // Location form
-app.get("/api/get-location/:locationId", (req, res, next) =>
-  openDbConnection(req, res, next, getLocation)
+app.get("/api/get-locations", (req, res, next) =>
+  openDbConnection(req, res, next, getLocations)
 );
 
 app.post(
@@ -76,6 +77,10 @@ app.post(
   (req, res, next) =>
     openDbConnection(req, res, next, checkForExistingLocation),
   (req, res, next) => openDbConnection(req, res, next, addLocation)
+);
+
+app.put("/api/update-location", (req, res, next) =>
+  openDbConnection(req, res, next, updateLocation)
 );
 
 // interacts with AS400 db

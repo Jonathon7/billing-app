@@ -17,11 +17,35 @@ export default class Customer extends React.Component {
     newId: "", // adding id
     updatedCustomer: "",
     confirm: false,
-    emptyFields: [], // will specify which input are empty
+    emptyFields: [], // will specify which inputs are empty
+    customers: [],
+  };
+
+  componentDidMount() {
+    this.getCustomers();
+  }
+
+  getCustomers = () => {
+    axios
+      .get("/api/get-customers")
+      .then((res) => {
+        let customers = [];
+
+        for (let i = 0; i < res.data.length; i++) {
+          let customer = {};
+          customer.id = res.data[i][0].value;
+          customer.name = res.data[i][1].value;
+
+          customers.push(customer);
+        }
+        this.setState({ customers }, () => console.log(customers));
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   handleChange = (e) => {
-    console.log(e.target);
     // test to allow only numbers
     const regex = /^[0-9\b]+$/;
 
@@ -163,7 +187,7 @@ export default class Customer extends React.Component {
             onChange={this.handleChange}
             value={this.state.id}
             name="id"
-            placeholder="Enter customer ID"
+            placeholder="Enter customer Name or ID"
             style={{ border: this.isFieldEmpty("id") && "solid 1px red" }}
             onFocus={this.removeEmptyField}
           ></input>
@@ -196,7 +220,11 @@ export default class Customer extends React.Component {
             onChange={this.handleChange}
           ></input>
 
-          <input type="submit" value="Add Customer"></input>
+          <input
+            type="submit"
+            value="Add Customer"
+            className="black-button-white-text"
+          ></input>
         </form>
         {this.state.confirm && (
           <Confirmation

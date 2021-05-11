@@ -52,17 +52,6 @@ export default class App extends React.Component {
         >
           Transactions
         </p>
-        <p
-          onClick={() => {
-            this.props.toggleComponent("bill");
-            this.setState({ activeComponent: "bill" });
-          }}
-          style={{
-            color: this.state.activeComponent === "bill" && "#00cccc",
-          }}
-        >
-          Bill
-        </p>
       </div>
     );
   }
