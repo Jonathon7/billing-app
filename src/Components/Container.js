@@ -1,27 +1,114 @@
 import React from "react";
 import axios from "axios";
 import "./container.css";
+// import { createNotification } from "../utils/notifications";
 
 export default class Container extends React.Component {
-  state = {
-    containerId: "",
-    cubicYard: "30",
-    type: "COMPACTOR",
-    cityOwned: 1,
-    inStock: 1,
-    returnedToStockDate: "",
-    location: "",
-    comment: "",
-    containerIdSearch: "",
-    container: [], // the returned container the user searched for
-    emptyFields: [],
-    height: "", // height of form div
-  };
+  constructor() {
+    super();
+    this.state = {
+      containerId: "",
+      cubicYard: "30",
+      type: "COMPACTOR",
+      cityOwned: 1,
+      inStock: 1,
+      returnedToStockDate: "",
+      customer: "",
+      location: "",
+      comment: "",
+      setDate: "",
+      containerIdSearch: "",
+      container: [], // the returned container the user searched for
+      emptyFields: [],
+      height: "", // height of form div
+      containerExists: false,
+    };
+
+    this.timeout = null;
+  }
 
   componentDidMount() {
     const height = this.formContainer.clientHeight;
     this.setState({ height });
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.containerId != this.state.containerId) {
+      this.fillContainerForm();
+    }
+  }
+
+  createNotification = (type) => {
+    return () => {
+      switch (type) {
+        case "info":
+          NotificationManager.info("Info message");
+          break;
+        case "success":
+          NotificationManager.success("Success message", "Title here");
+          break;
+        case "warning":
+          NotificationManager.warning(
+            "Warning message",
+            "Close after 3000ms",
+            3000
+          );
+          break;
+        case "error":
+          NotificationManager.error("Error message", "Click me!", 5000, () => {
+            alert("callback");
+          });
+          break;
+      }
+    };
+  };
+
+  fillContainerForm = () => {
+    clearTimeout(this.timeout);
+
+    if (!this.state.containerId) {
+      this.setState({
+        cubicYard: "30",
+        type: "COMPACTOR",
+        cityOwned: 1,
+        setDate: "",
+        location: "",
+        customer: "",
+        comment: "",
+        containerExists: false,
+      });
+      return;
+    }
+
+    this.timeout = setTimeout(() => {
+      axios.get(`/api/get-container/${this.state.containerId}`).then((res) => {
+        console.log(res);
+        if (res.data === "Container Not Found.") {
+          this.setState({
+            cubicYard: "30",
+            type: "COMPACTOR",
+            cityOwned: 1,
+            setDate: "",
+            location: "",
+            customer: "",
+            comment: "",
+            containerExists: false,
+          });
+        } else {
+          this.setState({
+            cubicYard: res.data[2].value,
+            type: res.data[3].value,
+            cityOwned: res.data[4].value,
+            setDate: res.data[5].value,
+            location: res.data[8].value,
+            customer: res.data[9].value,
+            comment: res.data[10].value,
+            containerExists: true,
+          });
+        }
+      });
+    }, 500);
+  };
 
   handleChange = (e) => {
     // test to allow only numbers
@@ -101,10 +188,19 @@ export default class Container extends React.Component {
     axios
       .get(`/api/get-container/${this.state.containerIdSearch}`)
       .then((res) => {
-        console.log(res);
-        this.setState({
-          container: res.data,
-        });
+        if (res.data === "Container Not Found.") {
+          console.log("HIT");
+          this.createNotification("error");
+          // createNotification(
+          //   NotificationManager,
+          //   "error",
+          //   "Container does not exist."
+          // );
+        } else {
+          this.setState({
+            container: res.data,
+          });
+        }
       });
   };
 
@@ -180,34 +276,47 @@ export default class Container extends React.Component {
                 value={this.state.containerId}
               ></input>
               <label htmlFor="cubic-yard">Cubic Yard: </label>
-              <select name="cubicYard" onChange={this.handleChange}>
+              <select
+                name="cubicYard"
+                onChange={this.handleChange}
+                value={this.state.cubicYard}
+              >
                 <option value="30">30yd</option>
                 <option value="40">35yd</option>
                 <option value="40">40yd</option>
                 <option value="40">42yd</option>
               </select>
               <label htmlFor="type">Type: </label>
-              <select name="type" onChange={this.handleChange}>
+              <select
+                name="type"
+                onChange={this.handleChange}
+                value={this.state.type}
+              >
                 <option value="COMPACTOR">COMPACTOR</option>
                 <option value="OPEN TOP">OPEN TOP</option>
               </select>
               <label htmlFor="city-owned">City Owned: </label>
-              <select name="cityOwned" onChange={this.handleChange}>
+              <select
+                name="cityOwned"
+                onChange={this.handleChange}
+                value={this.state.cityOwned}
+              >
                 <option value="1">YES</option>
                 <option value="0">NO</option>
               </select>
-              <label htmlFor="in-stock">In Stock: </label>
-              <input
-                readOnly
-                value={this.state.location === "" ? "YES" : "NO"}
-              ></input>
-              <label htmlFor="returned-to-stock-date">
-                Returned to Stock Date:{" "}
-              </label>
+              <label htmlFor="setDate">Set Date </label>
               <input
                 type="date"
-                name="returnedToStockDate"
+                name="setDate"
                 onChange={this.handleChange}
+                value={this.state.setDate ? this.state.setDate : ""}
+              ></input>
+              <label htmlFor="customer">Customer </label>
+              <input
+                type="text"
+                name="customer"
+                onChange={this.handleChange}
+                value={this.state.customer ? this.state.customer : ""}
               ></input>
               <label htmlFor="location">Location: </label>
               <input
@@ -215,7 +324,7 @@ export default class Container extends React.Component {
                 name="location"
                 onFocus={this.removeEmptyField}
                 onChange={this.handleChange}
-                value={this.state.location}
+                value={this.state.location ? this.state.location : ""}
                 style={{
                   border: this.isFieldEmpty("location") && "solid 1px red",
                 }}
@@ -225,12 +334,15 @@ export default class Container extends React.Component {
                 type="text"
                 name="comment"
                 onChange={this.handleChange}
+                value={this.state.comment ? this.state.comment : ""}
               ></input>
               <input
                 type="submit"
                 className="black-button-white-text"
                 value={
-                  this.state.containerId ? "Update Container" : "Add Container"
+                  this.state.containerExists
+                    ? "Update Container"
+                    : "Add Container"
                 }
               ></input>
             </form>

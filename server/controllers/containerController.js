@@ -11,7 +11,6 @@ const insertContainer = (req, res, next, connection) => {
     comment,
   } = req.body;
 
-  console.log(req.body);
   const request = new Request(
     `insert into ${process.env.containerTable} (CubicYard, Type, CityOwned, InStock, ReturnedToStockDate, Location, Comment) values ('${cubicYard}', '${type}', ${cityOwned}, ${inStock}, '${returnedToStockDate}', '${location}', '${comment}');`,
     (err) => {
@@ -48,7 +47,11 @@ const getContainer = (req, res, next, connection) => {
   });
 
   request.on("requestCompleted", function () {
-    res.status(200).json(result);
+    if (result) {
+      res.status(200).json(result);
+    } else {
+      res.status(200).json("Container Not Found.");
+    }
   });
 
   connection.execSql(request);
